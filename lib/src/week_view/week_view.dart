@@ -519,12 +519,12 @@ class WeekViewState<T extends Object?> extends State<WeekView<T>> {
 
   void _assignBuilders() {
     _timeLineBuilder = widget.timeLineBuilder ?? _defaultTimeLineBuilder;
-    _eventTileBuilder = widget.eventTileBuilder ?? _defaultEventTileBuilder;
+    _eventTileBuilder = widget.eventTileBuilder ?? _mdc_defaultEventTileBuilder;
     _weekHeaderBuilder =
         widget.weekPageHeaderBuilder ?? _defaultWeekPageHeaderBuilder;
-    _weekDayBuilder = widget.weekDayBuilder ?? _defaultWeekDayBuilder;
+    _weekDayBuilder = widget.weekDayBuilder ?? _mdc_defaultWeekDayBuilder;
     _weekDetectorBuilder =
-        widget.weekDetectorBuilder ?? _defaultPressDetectorBuilder;
+        widget.weekDetectorBuilder ?? _mdc_defaultPressDetectorBuilder;
     _weekNumberBuilder = widget.weekNumberBuilder ?? _defaultWeekNumberBuilder;
     _fullDayEventBuilder =
         widget.fullDayEventBuilder ?? _defaultFullDayEventBuilder;
@@ -615,15 +615,18 @@ class WeekViewState<T extends Object?> extends State<WeekView<T>> {
                     minuteSlotSize.minutes * i,
                   ),
                 ),
-                onTap: () => widget.onDateTap?.call(
-                  DateTime(
-                    date.year,
-                    date.month,
-                    date.day,
-                    0,
-                    minuteSlotSize.minutes * i,
-                  ),
-                ),
+                onTap: () {
+                  //print(slots);
+                  widget.onDateTap?.call(
+                    DateTime(
+                      date.year,
+                      date.month,
+                      date.day,
+                      0,
+                      minuteSlotSize.minutes * i,
+                    ),
+                  );
+                },
                 child: SizedBox(width: width, height: heightPerSlot),
               ),
             ),
@@ -876,4 +879,115 @@ class WeekViewState<T extends Object?> extends State<WeekView<T>> {
   /// Returns true if it does else false.
   bool _showLiveTimeIndicator(List<DateTime> dates) =>
       dates.any((date) => date.compareWithoutTime(DateTime.now()));
+
+  DateTime _mdc_selectedDateTime(DateTime date, int minutes) {
+    return DateTime(date.year, date.month, date.day, 0, minutes);
+  }
+
+  Widget _mdc_defaultPressDetectorBuilder({
+    required DateTime date,
+    required double height,
+    required double width,
+    required double heightPerMinute,
+    required MinuteSlotSize minuteSlotSize,
+  }) {
+    final heightPerSlot = minuteSlotSize.minutes * heightPerMinute;
+    final slots = (Constants.hoursADay * 60) ~/ minuteSlotSize.minutes;
+
+    return Material(
+        child: Container(
+      height: height,
+      width: width,
+      child: Stack(
+        children: [
+          for (int i = 0; i < slots; i++)
+            Positioned(
+              top: heightPerSlot * i,
+              left: 0,
+              right: 0,
+              bottom: height - (heightPerSlot * (i + 1)),
+              child: Container(
+                width: width,
+                height: heightPerSlot,
+                decoration: BoxDecoration(
+                    border: Border(
+                  top: BorderSide(
+                      width: 0.25, color: Colors.black.withAlpha(50)),
+                  bottom: BorderSide(
+                      width: 0.25, color: Colors.black.withAlpha(50)),
+                )),
+                child: _mdc_selectedDateTime(date, minuteSlotSize.minutes * i)
+                        .isAfter(DateTime.now())
+                    ? InkWell(
+                        onLongPress: () => widget.onDateLongPress?.call(
+                          _mdc_selectedDateTime(
+                              date, minuteSlotSize.minutes * i),
+                        ),
+                        onTap: () {
+                          widget.onDateTap?.call(
+                            _mdc_selectedDateTime(
+                                date, minuteSlotSize.minutes * i),
+                          );
+                        },
+                      )
+                    : SizedBox(),
+              ),
+            ),
+        ],
+      ),
+    ));
+  }
+
+  Widget _mdc_defaultEventTileBuilder(
+      DateTime date,
+      List<CalendarEventData<T>> events,
+      Rect boundary,
+      DateTime startDuration,
+      DateTime endDuration) {
+    if (events.isNotEmpty)
+      return RoundedEventTile(
+        borderRadius: BorderRadius.circular(6.0),
+        title: '', //events[0].title,
+        titleStyle: events[0].titleStyle ??
+            TextStyle(
+              fontSize: 12,
+              color: events[0].color.accent,
+            ),
+        descriptionStyle: events[0].descriptionStyle,
+        totalEvents: events.length,
+        padding: EdgeInsets.all(7.0),
+        backgroundColor: events[0].color,
+      );
+    else
+      return Container();
+  }
+
+  Widget _mdc_defaultWeekDayBuilder(DateTime date) {
+    var shouldHighlight = date.withoutTime == DateTime.now().withoutTime;
+    return Center(
+      child: Column(
+        mainAxisSize: MainAxisSize.min,
+        mainAxisAlignment: MainAxisAlignment.center,
+        children: [
+          Text(widget.weekDayStringBuilder?.call(date.weekday - 1) ??
+              Constants.weekTitles[date.weekday - 1]),
+          Container(
+              height: widget.weekTitleHeight / 2,
+              width: widget.width,
+              child: CircleAvatar(
+                backgroundColor:
+                    shouldHighlight ? Colors.blue : Colors.transparent,
+                child: Text(
+                  widget.weekDayDateStringBuilder?.call(date.day) ??
+                      date.day.toString(),
+                  style: TextStyle(
+                    fontSize: 12,
+                    color: shouldHighlight ? Colors.white : Colors.black,
+                  ),
+                ),
+              )),
+        ],
+      ),
+    );
+  }
 }

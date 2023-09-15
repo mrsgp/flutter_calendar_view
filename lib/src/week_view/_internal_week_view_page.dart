@@ -225,6 +225,18 @@ class InternalWeekViewPage<T extends Object?> extends StatelessWidget {
                         showVerticalLine: showVerticalLine,
                       ),
                     ),
+                    CustomPaint(
+                      size: Size(width, height),
+                      painter: HalfHourLinePainter(
+                        lineColor: hourIndicatorSettings.color,
+                        lineHeight: hourIndicatorSettings.height,
+                        offset: timeLineWidth + hourIndicatorSettings.offset,
+                        minuteHeight: heightPerMinute,
+                        lineStyle: hourIndicatorSettings.lineStyle,
+                        dashWidth: hourIndicatorSettings.dashWidth,
+                        dashSpaceWidth: hourIndicatorSettings.dashSpaceWidth,
+                      ),
+                    ),
                     if (showLiveLine && liveTimeIndicatorSettings.height > 0)
                       LiveTimeIndicator(
                         liveTimeIndicatorSettings: liveTimeIndicatorSettings,
@@ -288,6 +300,7 @@ class InternalWeekViewPage<T extends Object?> extends StatelessWidget {
                       height: height,
                       timeLineOffset: timeLineOffset,
                       timeLineBuilder: timeLineBuilder,
+                      showHalfHours: minuteSlotSize == MinuteSlotSize.minutes30,
                     ),
                   ],
                 ),

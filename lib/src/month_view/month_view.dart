@@ -608,6 +608,8 @@ class _MonthPageBuilder<T> extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final monthDays = date.datesOfMonths(startDay: startDay);
+    final numberOfGridCells =
+        (date.firstWeekDayofMonth + date.daysInMonth) - 1 > 35 ? 42 : 35;
     return Container(
       width: width,
       height: height,
@@ -618,7 +620,7 @@ class _MonthPageBuilder<T> extends StatelessWidget {
           crossAxisCount: 7,
           childAspectRatio: cellRatio,
         ),
-        itemCount: 42,
+        itemCount: numberOfGridCells,
         shrinkWrap: true,
         itemBuilder: (context, index) {
           final events = controller.getEventsOnDay(monthDays[index]);

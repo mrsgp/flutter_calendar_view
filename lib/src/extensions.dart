@@ -9,6 +9,15 @@ import '../calendar_view.dart';
 T? ambiguate<T>(T? object) => object;
 
 extension DateTimeExtensions on DateTime {
+  int get firstWeekDayofMonth => DateTime(year, month, 1).weekday;
+
+  ///sgp get number of days in a month
+  int get daysInMonth => DateUtils.getDaysInMonth(year, month);
+
+  ///sgp get last day of the month
+  DateTime get lastDayOfMonth =>
+      month < 12 ? DateTime(year, month + 1, 0) : DateTime(year + 1, 1, 0);
+
   /// Compares only [day], [month] and [year] of [DateTime].
   bool compareWithoutTime(DateTime date) {
     return day == date.day && month == date.month && year == date.year;
