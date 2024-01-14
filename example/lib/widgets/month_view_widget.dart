@@ -1,7 +1,7 @@
 import 'package:calendar_view/calendar_view.dart';
 import 'package:flutter/material.dart';
 
-import '../model/event.dart';
+import '../pages/event_details_page.dart';
 import 'mdc_calandar_cell_widget.dart';
 
 class MonthViewWidget extends StatelessWidget {
@@ -9,16 +9,25 @@ class MonthViewWidget extends StatelessWidget {
   final double? width;
 
   const MonthViewWidget({
-    Key? key,
+    super.key,
     this.state,
     this.width,
-  }) : super(key: key);
+  });
 
   @override
   Widget build(BuildContext context) {
-    return MonthView<Event>(
+    return MonthView(
       key: state,
       width: width,
+      onEventTap: (event, date) {
+        Navigator.of(context).push(
+          MaterialPageRoute(
+            builder: (_) => DetailsPage(
+              event: event,
+            ),
+          ),
+        );
+      },
       minMonth: DateTime.now(),
       cellBuilder: (date, event, isToday, isInMonth) {
         return MDCFilledCell(
@@ -74,7 +83,7 @@ class MonthViewWidget extends StatelessWidget {
     return "${monthName} ${date.year}";
   }
 
-  Color _cellBackgroundColor(List<CalendarEventData<Event>> events) {
+  Color _cellBackgroundColor(List<CalendarEventData> events) {
     if (events.isEmpty)
       return Colors.white;
     else if (events.length < 12)

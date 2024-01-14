@@ -1,28 +1,28 @@
 import 'package:calendar_view/calendar_view.dart';
 import 'package:flutter/material.dart';
 
-import '../model/event.dart';
+import '../pages/event_details_page.dart';
 
 class WeekViewWidget extends StatelessWidget {
   final GlobalKey<WeekViewState>? state;
   final double? width;
 
-  const WeekViewWidget({Key? key, this.state, this.width}) : super(key: key);
+  const WeekViewWidget({super.key, this.state, this.width});
 
   @override
   Widget build(BuildContext context) {
-    return WeekView<Event>(
-      liveTimeIndicatorSettings: HourIndicatorSettings(height: 0),
-      minuteSlotSize: MinuteSlotSize.minutes30,
-      showLiveTimeLineInAllDays: false,
-      onDateTap: (date) => print(date),
-      timeLineBuilder: (date) => _timeLineBuilder(date),
-      minDay: DateTime.now(),
+    return WeekView(
       key: state,
       width: width,
-      weekNumberBuilder: (firstDayOfWeek) => Text(''),
-      headerStringBuilder: null,
-      onPageChange: (date, page) {},
+      onEventTap: (events, date) {
+        Navigator.of(context).push(
+          MaterialPageRoute(
+            builder: (_) => DetailsPage(
+              event: events.first,
+            ),
+          ),
+        );
+      },
     );
   }
 }
