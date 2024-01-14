@@ -43,8 +43,12 @@ class CalendarEventData<T extends Object?> {
   /// Define style of description.
   final TextStyle? descriptionStyle;
 
+  //sgp added properties
+  final int id;
+
   /// Stores all the events on [date]
-  const CalendarEventData({
+  CalendarEventData({
+    required this.id,
     required this.title,
     this.description = "",
     this.event,

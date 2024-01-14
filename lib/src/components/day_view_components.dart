@@ -236,12 +236,12 @@ class FullDayEventView<T> extends StatelessWidget {
               Container(
                 margin: const EdgeInsets.all(5.0),
                 padding: const EdgeInsets.all(1.0),
-                height: 24,
+                height: 16,
                 child: Text(
                   events[index].title,
                   style: titleStyle ??
                       TextStyle(
-                        fontSize: 16,
+                        fontSize: 20,
                         color: events[index].color.accent,
                       ),
                   maxLines: 1,

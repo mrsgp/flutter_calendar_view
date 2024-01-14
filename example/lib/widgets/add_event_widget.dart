@@ -262,6 +262,7 @@ class _AddEventWidgetState extends State<AddEventWidget> {
     _form.currentState?.save();
 
     final event = CalendarEventData<Event>(
+      id: 1,
       date: _startDate,
       color: _color,
       endTime: _endTime,
