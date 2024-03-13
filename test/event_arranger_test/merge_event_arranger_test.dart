@@ -1,6 +1,3 @@
-import 'package:calendar_view/calendar_view.dart';
-import 'package:flutter_test/flutter_test.dart';
-
 const height = 1440.0;
 const width = 500.0;
 const heightPerMinute = 1.0;
